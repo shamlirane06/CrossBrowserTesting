@@ -22,10 +22,11 @@ while time.time() - start_time < TIMEOUT_SECONDS:
         nodes = value.get("nodes", [])
 
         browsers = {
-            node.get("stereotype", {}).get("browserName")
-            for node in nodes
-            if node.get("availability") == "UP"
-        }
+    slot.get("stereotype", {}).get("browserName")
+    for node in nodes
+    if node.get("availability") == "UP"
+    for slot in node.get("slots", [])
+}
 
         if value.get("ready") and {"chrome", "firefox"}.issubset(browsers):
             print(
