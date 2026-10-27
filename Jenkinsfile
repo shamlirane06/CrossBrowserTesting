@@ -5,6 +5,7 @@ pipeline {
     environment {
         PYTHON = 'C:\\Users\\Shamli Rane\\AppData\\Local\\Python\\pythoncore-3.15-64\\python.exe'
         DOCKER = 'C:\\Users\\Shamli Rane\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe'
+        COMPOSE = 'C:\\Users\\Shamli Rane\\.docker\\cli-plugins\\docker-compose.exe'
     }
 
     options {
@@ -21,9 +22,9 @@ pipeline {
 
         stage('Start Selenium Grid') {
             steps {
-                bat '"%DOCKER%" compose up -d'
+                bat '"%COMPOSE%" up -d'
                 bat '"%PYTHON%" wait_grid.py'
-                bat '"%DOCKER%" compose ps'
+                bat '"%COMPOSE%" ps'
             }
         }
 
@@ -81,7 +82,7 @@ pipeline {
             )
 
             bat(
-                script: '"%DOCKER%" compose down',
+                script: '"%COMPOSE%" down',
                 returnStatus: true
             )
         }
