@@ -1,6 +1,11 @@
-
+```groovy
 pipeline {
     agent any
+
+    environment {
+        PYTHON = 'C:\\Users\\Shamli Rane\\AppData\\Local\\Python\\pythoncore-3.15-64\\python.exe'
+        DOCKER = 'C:\\Users\\Shamli Rane\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe'
+    }
 
     options {
         timestamps()
@@ -9,16 +14,16 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
-                bat 'python -m pip install -r requirements.txt'
+                bat '"%PYTHON%" -m pip install -r requirements.txt'
                 bat 'if not exist reports mkdir reports'
             }
         }
 
         stage('Start Selenium Grid') {
             steps {
-                bat 'docker compose up -d'
-                bat 'python wait_grid.py'
-                bat 'docker compose ps'
+                bat '"%DOCKER%" compose up -d'
+                bat '"%PYTHON%" wait_grid.py'
+                bat '"%DOCKER%" compose ps'
             }
         }
 
@@ -30,9 +35,10 @@ pipeline {
                             'BROWSER=chrome',
                             'SCREENSHOT_DIR=screenshots/chrome'
                         ]) {
-                            bat 'python -m pytest -v -s test_booking.py --junitxml=reports/chrome.xml'
+                            bat '"%PYTHON%" -m pytest -v -s test_booking.py --junitxml=reports/chrome.xml'
                         }
                     }
+
                     post {
                         always {
                             junit(
@@ -49,9 +55,10 @@ pipeline {
                             'BROWSER=firefox',
                             'SCREENSHOT_DIR=screenshots/firefox'
                         ]) {
-                            bat 'python -m pytest -v -s test_booking.py --junitxml=reports/firefox.xml'
+                            bat '"%PYTHON%" -m pytest -v -s test_booking.py --junitxml=reports/firefox.xml'
                         }
                     }
+
                     post {
                         always {
                             junit(
@@ -74,9 +81,10 @@ pipeline {
             )
 
             bat(
-                script: 'docker compose down',
+                script: '"%DOCKER%" compose down',
                 returnStatus: true
             )
         }
     }
 }
+```
